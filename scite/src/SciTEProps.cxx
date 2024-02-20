@@ -118,7 +118,7 @@ const char propDirectoryFileName[] = "SciTEDirectory.properties";
 Read global and user properties files.
 */
 void SciTEBase::ReadGlobalPropFile() {
-#ifdef unix
+#if defined(unix) || defined(__WATCOMC__)
 	extern char **environ;
 	char **e=environ;
 #else

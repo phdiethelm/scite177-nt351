@@ -43,7 +43,11 @@
 #endif
 #include <commctrl.h>
 
+// for chdir
 #ifdef _MSC_VER
+#include <direct.h>
+#endif
+#ifdef __WATCOMC__
 #include <direct.h>
 #endif
 #ifdef __BORLANDC__

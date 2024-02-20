@@ -1048,7 +1048,7 @@ void ScintillaWin::SetTicking(bool on) {
 		timer.ticking = on;
 		if (timer.ticking) {
 			timer.tickerID = ::SetTimer(MainHWND(), standardTimerID, timer.tickSize, NULL)
-				? reinterpret_cast<TickerID>(standardTimerID) : 0;
+                                ? TickerID(standardTimerID) : 0;
 		} else {
 			::KillTimer(MainHWND(), reinterpret_cast<uptr_t>(timer.tickerID));
 			timer.tickerID = 0;
@@ -1064,7 +1064,7 @@ bool ScintillaWin::SetIdle(bool on) {
 	if (idler.state != on) {
 		if (on) {
 			idler.idlerID = ::SetTimer(MainHWND(), idleTimerID, 10, NULL)
-				? reinterpret_cast<IdlerID>(idleTimerID) : 0;
+                                ? IdlerID(idleTimerID) : 0;
 		} else {
 			::KillTimer(MainHWND(), reinterpret_cast<uptr_t>(idler.idlerID));
 			idler.idlerID = 0;
