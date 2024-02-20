@@ -805,10 +805,12 @@ void SciTEWin::Creation() {
 
 	wToolBar.Show();
 
-	INITCOMMONCONTROLSEX icce;
-	icce.dwSize = sizeof(icce);
-	icce.dwICC = ICC_TAB_CLASSES;
-	InitCommonControlsEx(&icce);
+	//INITCOMMONCONTROLSEX icce;
+	//icce.dwSize = sizeof(icce);
+	//icce.dwICC = ICC_TAB_CLASSES;
+	//InitCommonControlsEx(&icce);
+	InitCommonControls();
+
 	wTabBar = ::CreateWindowEx(
 	              0,
 	              WC_TABCONTROL,

@@ -19,13 +19,13 @@ CC=wpp386
 RC=wrc
 LD=wlink
 
-CXXFLAGS=-bm -zq -DWIN32 -zq -za0x
+CXXFLAGS=-bm -zq -DWIN32 -zq -za0x -D_WIN32_WINNT=0x0351
 CXXDEBUG=-DDEBUG
 CXXNDEBUG=-Osrlran
 NAME=-fo=
 LDFLAGS=SYS nt_dll 
 LDDEBUG=
-LIBS=KERNEL32.lib USER32.lib GDI32.lib IMM32.lib OLE32.LIB
+LIBS=KERNEL32.lib USER32.lib GDI32.lib OLE32.LIB
 NOLOGO=-zq
 
 !IFDEF QUIET
@@ -179,10 +179,10 @@ ScintRes.res : ScintRes.rc
 	$(RC) $*.rc -fo=$@ -r
 
 $(COMPONENT): $(SOBJS)
-	$(LD) $(LDFLAGS) NAME $@ F { $< } library imm32 RES ScintRes.res
+	$(LD) $(LDFLAGS) NAME $@ F { $< } RES ScintRes.res
 	
 $(LEXCOMPONENT): $(LOBJS) AutoComplete.obj
-	$(LD) $(LDFLAGS) NAME $@ F { $< }  library imm32 RES ScintRes.res 
+	$(LD) $(LDFLAGS) NAME $@ F { $< }  RES ScintRes.res 
 
 # Define how to build all the objects and what they depend on
 
