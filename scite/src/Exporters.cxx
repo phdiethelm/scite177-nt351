@@ -24,7 +24,9 @@
 
 #if PLAT_WIN
 
-#define _WIN32_WINNT  0x0400
+#ifndef _WIN32_WINNT
+    #define _WIN32_WINNT  0x0400
+#endif
 #ifdef _MSC_VER
 // windows.h, et al, use a lot of nameless struct/unions - can't fix it, so allow it
 #pragma warning(disable: 4201)
@@ -865,7 +867,7 @@ void SciTEBase::SaveToPDF(FilePath saveName) {
 			}
 			// start to write PDF file here (PDF1.4Ref(p63))
 			// ASCII>127 characters to indicate binary-possible stream
-			oT->write("%PDF-1.3\n%�쏢\n");
+			oT->write("%PDF-1.3\n%�쏢\n");
 			styleCurrent = STYLE_DEFAULT;
 
 			// build objects for font resources; note that font objects are

@@ -12,7 +12,10 @@
 #include <assert.h>
 #include <limits.h>
 
-#define _WIN32_WINNT  0x0351
+#ifndef _WIN32_WINNT
+    #define _WIN32_WINNT  0x0400
+#endif
+
 #include <windows.h>
 #include <commctrl.h>
 #include <richedit.h>
