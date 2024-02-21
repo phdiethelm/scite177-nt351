@@ -20,22 +20,13 @@ CC=wpp386
 RC=wrc
 LD=wlink
 
-CXXFLAGS=-bm -zq -DWIN32 -D_WIN32_WINNT=0x0351
-CCFLAGS=-zq -bm
+CXXFLAGS=-bm -zq -za0x -DWIN32 -D_WIN32_WINNT=0x0351
+CCFLAGS=-bm -zq
 CXXDEBUG=-DDEBUG
-CXXNDEBUG= -DNDEBUG -Osrlran
-NAME=-fo=
+CXXNDEBUG= -DNDEBUG -Oslran
 LDFLAGS=SYS nt_win
 LDDEBUG=
 LIBS=
-NOLOGO=-zq
-
-!IFDEF QUIET
-CC=@$(CC)
-CXXFLAGS=$(CXXFLAGS) $(NOLOGO)
-CCFLAGS=$(CCFLAGS) $(NOLOGO)
-LDFLAGS=$(LDFLAGS) $(NOLOGO)
-!ENDIF
 
 !IFDEF DEBUG
 CXXFLAGS=$(CXXFLAGS) $(CXXDEBUG)
@@ -183,7 +174,7 @@ OBJSSTATIC=SciTEBase.obj &
 	..\..\scintilla\win32\RESearch.obj &
 	..\..\scintilla\win32\RunStyles.obj &
 	..\..\scintilla\win32\ScintillaBaseL.obj &
-	..\..\scintilla\win32\ScintillaWinL.obj &
+	..\..\scintilla\win32\ScintillaWinS.obj &
 	..\..\scintilla\win32\Style.obj &
 	..\..\scintilla\win32\StyleContext.obj &
 	..\..\scintilla\win32\UniConversion.obj &
@@ -248,7 +239,7 @@ CCFLAGS=$(CCFLAGS) $(INCLUDEDIRS)
 
 ALL: $(PROG) $(PROGSTATIC) $(DLLS) $(PROPS)
 
-clean:
+clean: .SYMBOLIC
 	del /q $(DIR_BIN)\*.exe *.o *.obj $(DIR_BIN)\*.dll *.res *.map $(DIR_BIN)\*.exp $(DIR_BIN)\*.lib $(DIR_BIN)\*.pdb
 
 $(DIR_BIN)\Scintilla.dll: ..\..\scintilla\bin\Scintilla.dll
@@ -399,18 +390,18 @@ $(DIR_BIN)\yaml.properties:	..\src\yaml.properties
 #	@exit 255
 
 SciTERes.res: SciTERes.rc
-	$(RC) $*.rc -fo=$@ -r -i=..\src -i="..\..\Scintilla\Win32" 
+	$(RC) SciTERes.rc -fo=$@ -r -q -i=..\src -i="..\..\Scintilla\Win32" 
 
 Sc1Res.res: SciTERes.rc
-	$(RC) $*.rc -fo=$@ -r
+	$(RC) SciTERes.rc -fo=$@ -r -q -i=..\src -i="..\..\Scintilla\Win32" 
 
-$(PROG): $(OBJS)
-	$(LD) $(LDFLAGS) NAME $@ f { $< } RES SciTERes.res
+$(PROG): $(OBJS) SciTERes.res
+	$(LD) $(LDFLAGS) OP q NAME $@ f { $(OBJS) } RES SciTERes.res
 
 # disabled for now. Did not get it to link...
 #  file clib3r.lib(dstrt386): multiple starting addresses found
-#$(PROGSTATIC): $(OBJSSTATIC) $(LEXOBJS) 
-#	$(LD) $(LDFLAGS) NAME $@ f { $< } RES Sc1Res.res
+$(PROGSTATIC): $(OBJSSTATIC) $(LEXOBJS) Sc1Res.res
+	$(LD) $(LDFLAGS) OP q NAME $@ f { $(OBJSSTATIC) $(LEXOBJS) } RES Sc1Res.res
 
 
 # Define how to build all the objects and what they depend on
@@ -425,7 +416,7 @@ $(PROG): $(OBJS)
 	wcc386 $(CCFLAGS) $<
 
 Sc1.obj: SciTEWin.cxx
-	$(CC) $(CXXFLAGS) -DSTATIC_BUILD $(NAME)$@ SciTEWin.cxx
+	$(CC) $(CXXFLAGS) -DSTATIC_BUILD -fo=$@ SciTEWin.cxx
 
 # Dependencies
 DirectorExtension.obj: DirectorExtension.cxx 
