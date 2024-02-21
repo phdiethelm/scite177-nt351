@@ -68,6 +68,9 @@
 #define UNICODE_NOCHAR                  0xFFFF
 #endif
 
+#if !defined(WM_IME_STARTCOMPOSITION) && (_WIN32_WINNT >= 0x0400)
+#include <imm.h>
+#endif
 
 #include <commctrl.h>
 #ifndef __BORLANDC__
@@ -495,7 +498,45 @@ LRESULT ScintillaWin::WndPaint(uptr_t wParam) {
 }
 
 sptr_t ScintillaWin::HandleComposition(uptr_t wParam, sptr_t lParam) {
+#if defined(__DMC__) || (_WIN32_WINNT < 0x0400)
+	// Digital Mars compiler and NT 3.x does not include Imm library
 	return 0;
+#else
+	if (lParam & GCS_RESULTSTR) {
+		HIMC hIMC = ::ImmGetContext(MainHWND());
+		if (hIMC) {
+			const int maxLenInputIME = 200;
+			wchar_t wcs[maxLenInputIME];
+			LONG bytes = ::ImmGetCompositionStringW(hIMC,
+				GCS_RESULTSTR, wcs, (maxLenInputIME-1)*2);
+			int wides = bytes / 2;
+			if (IsUnicodeMode()) {
+				char utfval[maxLenInputIME * 3];
+				unsigned int len = UTF8Length(wcs, wides);
+				UTF8FromUTF16(wcs, wides, utfval, len);
+				utfval[len] = '\0';
+				AddCharUTF(utfval, len);
+			} else {
+				char dbcsval[maxLenInputIME * 2];
+				int size = ::WideCharToMultiByte(InputCodePage(),
+					0, wcs, wides, dbcsval, sizeof(dbcsval) - 1, 0, 0);
+				for (int i=0; i<size; i++) {
+					AddChar(dbcsval[i]);
+				}
+			}
+			// Set new position after converted
+			Point pos = LocationFromPosition(currentPos);
+			COMPOSITIONFORM CompForm;
+			CompForm.dwStyle = CFS_POINT;
+			CompForm.ptCurrentPos.x = pos.x;
+			CompForm.ptCurrentPos.y = pos.y;
+			::ImmSetCompositionWindow(hIMC, &CompForm);
+			::ImmReleaseContext(MainHWND(), hIMC);
+		}
+		return 0;
+	}
+	return ::DefWindowProc(MainHWND(), WM_IME_COMPOSITION, wParam, lParam);
+#endif
 }
 
 // Translate message IDs from WM_* and EM_* to SCI_* so can partly emulate Windows Edit control
@@ -667,6 +708,13 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 		return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
 
 	case WM_LBUTTONDOWN: {
+#if !defined(__DMC__) && (_WIN32_WINNT >= 0x0400)
+		// Digital Mars compiler does not include Imm library
+		// For IME, set the composition string as the result string.
+		HIMC hIMC = ::ImmGetContext(MainHWND());
+		::ImmNotifyIME(hIMC, NI_COMPOSITIONSTR, CPS_COMPLETE, 0);
+		::ImmReleaseContext(MainHWND(), hIMC);
+#endif
 		//
 		//Platform::DebugPrintf("Buttdown %d %x %x %x %x %x\n",iMessage, wParam, lParam,
 		//	Platform::IsKeyDown(VK_SHIFT),
@@ -1726,6 +1774,49 @@ DropTarget::DropTarget() {
  * Called when IME Window opened.
  */
 void ScintillaWin::ImeStartComposition() {
+#if !defined(__DMC__) && (_WIN32_WINNT >= 0x0400)
+	// Digital Mars compiler does not include Imm library
+	if (caret.active) {
+		// Move IME Window to current caret position
+		HIMC hIMC = ::ImmGetContext(MainHWND());
+		Point pos = LocationFromPosition(currentPos);
+		COMPOSITIONFORM CompForm;
+		CompForm.dwStyle = CFS_POINT;
+		CompForm.ptCurrentPos.x = pos.x;
+		CompForm.ptCurrentPos.y = pos.y;
+
+		::ImmSetCompositionWindow(hIMC, &CompForm);
+
+		// Set font of IME window to same as surrounded text.
+		if (stylesValid) {
+			// Since the style creation code has been made platform independent,
+			// The logfont for the IME is recreated here.
+			int styleHere = (pdoc->StyleAt(currentPos)) & 31;
+			LOGFONTA lf = {0,0,0,0,0,0,0,0,0,0,0,0,0, ""};
+			int sizeZoomed = vs.styles[styleHere].size + vs.zoomLevel;
+			if (sizeZoomed <= 2)	// Hangs if sizeZoomed <= 1
+				sizeZoomed = 2;
+			AutoSurface surface(this);
+			int deviceHeight = sizeZoomed;
+			if (surface) {
+				deviceHeight = (sizeZoomed * surface->LogPixelsY()) / 72;
+			}
+			// The negative is to allow for leading
+			lf.lfHeight = -(abs(deviceHeight));
+			lf.lfWeight = vs.styles[styleHere].bold ? FW_BOLD : FW_NORMAL;
+			lf.lfItalic = static_cast<BYTE>(vs.styles[styleHere].italic ? 1 : 0);
+			lf.lfCharSet = DEFAULT_CHARSET;
+			lf.lfFaceName[0] = '\0';
+			if (vs.styles[styleHere].fontName)
+				strcpy(lf.lfFaceName, vs.styles[styleHere].fontName);
+
+			::ImmSetCompositionFontA(hIMC, &lf);
+		}
+		::ImmReleaseContext(MainHWND(), hIMC);
+		// Caret is displayed in IME window. So, caret in Scintilla is useless.
+		DropCaret();
+	}
+#endif
 }
 
 /** Called when IME Window closed. */
