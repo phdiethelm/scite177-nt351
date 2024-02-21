@@ -1,0 +1,5 @@
+*.obj
+*.res
+scintilla/bin/**
+scite/bin/**
+*.err
