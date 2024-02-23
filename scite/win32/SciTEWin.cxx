@@ -1895,9 +1895,9 @@ SString SciTEWin::EncodeString(const SString &s) {
 			DWORD charSet = props.GetInt("character.set", DEFAULT_CHARSET);
 			codePage = CodePageFromCharSet(charSet, codePage);
 
-			int cchWide = ::MultiByteToWideChar(CP_UTF8, 0, s.c_str(), s.length(), NULL, 0);
+			int cchWide = ::MultiByteToWideChar(_WIN32_WINNT >= 0x0400 ? CP_UTF8 : CP_ACP, 0, s.c_str(), s.length(), NULL, 0);
 			wchar_t *pszWide = new wchar_t[cchWide + 1];
-			::MultiByteToWideChar(CP_UTF8, 0, s.c_str(), s.length(), pszWide, cchWide + 1);
+			::MultiByteToWideChar(_WIN32_WINNT >= 0x0400 ? CP_UTF8 : CP_ACP, 0, s.c_str(), s.length(), pszWide, cchWide + 1);
 
 			int cchMulti = ::WideCharToMultiByte(codePage, 0, pszWide, cchWide, NULL, 0, NULL, NULL);
 			char *pszMulti = new char[cchMulti + 1];
@@ -1931,9 +1931,9 @@ SString SciTEWin::GetRangeInUIEncoding(Window &win, int selStart, int selEnd) {
 			wchar_t *pszWide = new wchar_t[cchWide + 1];
 			::MultiByteToWideChar(codePage, 0, s.c_str(), s.length(), pszWide, cchWide + 1);
 
-			int cchMulti = ::WideCharToMultiByte(CP_UTF8, 0, pszWide, cchWide, NULL, 0, NULL, NULL);
+			int cchMulti = ::WideCharToMultiByte(_WIN32_WINNT >= 0x0400 ? CP_UTF8 : CP_ACP, 0, pszWide, cchWide, NULL, 0, NULL, NULL);
 			char *pszMulti = new char[cchMulti + 1];
-			::WideCharToMultiByte(CP_UTF8, 0, pszWide, cchWide, pszMulti, cchMulti + 1, NULL, NULL);
+			::WideCharToMultiByte(_WIN32_WINNT >= 0x0400 ? CP_UTF8 : CP_ACP, 0, pszWide, cchWide, pszMulti, cchMulti + 1, NULL, NULL);
 			pszMulti[cchMulti] = 0;
 
 			SString result(pszMulti);

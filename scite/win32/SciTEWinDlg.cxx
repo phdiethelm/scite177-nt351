@@ -760,7 +760,7 @@ public:
 		if (::IsWindowUnicode(Item(id))) {
 			WCHAR wsz[CTL_TEXT_BUF];
 			if (::GetDlgItemTextW(hDlg, id, wsz, CTL_TEXT_BUF)) {
-				if (::WideCharToMultiByte(CP_UTF8, 0, wsz, -1, msz, CTL_TEXT_BUF, NULL, NULL))
+				if (::WideCharToMultiByte(_WIN32_WINNT >= 0x0400 ? CP_UTF8 : CP_ACP, 0, wsz, -1, msz, CTL_TEXT_BUF, NULL, NULL))
 					result = msz;
 			}
 		} else {
@@ -779,7 +779,7 @@ public:
 			return ::SetDlgItemTextA(hDlg, id, "");
 
 		if (::IsWindowUnicode(Item(id))) {
-			if (::MultiByteToWideChar(CP_UTF8, 0, pmsz, -1, wsz, CTL_TEXT_BUF)) {
+			if (::MultiByteToWideChar(_WIN32_WINNT >= 0x0400 ? CP_UTF8 : CP_ACP, 0, pmsz, -1, wsz, CTL_TEXT_BUF)) {
 				bSuccess = ::SetDlgItemTextW(hDlg, id, wsz);
 			}
 		} else {
@@ -805,7 +805,7 @@ public:
 			for (int i = 0; i < mem.Length(); i++) {
 				//Platform::DebugPrintf("Combo[%0d] = %s\n", i, mem.At(i).c_str());
 				WCHAR wszBuf[CTL_TEXT_BUF];
-				::MultiByteToWideChar(CP_UTF8, 0, mem.At(i).c_str(), -1, wszBuf,
+				::MultiByteToWideChar(_WIN32_WINNT >= 0x0400 ? CP_UTF8 : CP_ACP, 0, mem.At(i).c_str(), -1, wszBuf,
 						    CTL_TEXT_BUF);
 				::SendMessageW(combo, CB_ADDSTRING, 0,
 					       reinterpret_cast<LPARAM>(wszBuf));
@@ -1697,7 +1697,7 @@ void SciTEWin::FindMessageBox(const SString &msg, const SString *findItem) {
 			::MultiByteToWideChar(CP_ACP, 0, sPart2.c_str(), -1, wszPart2, 256);
 
 			WCHAR wszFindItem[CTL_TEXT_BUF];
-			if (!::MultiByteToWideChar(CP_UTF8, 0, findItem->c_str(), -1, wszFindItem, CTL_TEXT_BUF)) {
+			if (!::MultiByteToWideChar(_WIN32_WINNT >= 0x0400 ? CP_UTF8 : CP_ACP, 0, findItem->c_str(), -1, wszFindItem, CTL_TEXT_BUF)) {
 				wszFindItem[0] = 0;
 			}
 
