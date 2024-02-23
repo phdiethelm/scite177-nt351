@@ -575,7 +575,7 @@ IDR_CLOSEFILE BITMAP "closefile.bmp"
 
 //The embedded properties file is to allow a one file distribution of Sc1.EXE
 #ifdef STATIC_BUILD
-Embedded Properties Embedded.properties
+Embedded Properties ..\src\Embedded.properties
 IDC_MARGIN         CURSOR  DISCARDABLE     "Margin.cur"
 #endif
 

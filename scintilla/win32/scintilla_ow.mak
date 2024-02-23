@@ -3,8 +3,8 @@
 # The License.txt file describes the conditions under which this software may be distributed.
 # Usage:
 #     wmake -f scintilla_ow.mak
-# For debug versions define DEBUG on the command line, for Borland:
-#     make DEBUG=1 -f scintilla_ow.mak
+# For debug versions define DEBUG on the command line:
+#     wmake -f scintilla_ow.mak DEBUG=1
 # The main makefile uses mingw32 gcc and may be more current than this file.
 
 .EXTENSIONS:
@@ -28,8 +28,8 @@ LDDEBUG=
 LIBS=KERNEL32.lib USER32.lib GDI32.lib OLE32.LIB
 
 !IFDEF DEBUG
-CXXFLAGS=$(CXXFLAGS) $(CXXDEBUG)
-LDFLAGS=$(LDDEBUG) $(LDFLAGS)
+CXXFLAGS=$(CXXFLAGS) $(CXXDEBUG) -d3i
+LDFLAGS=$(LDDEBUG) $(LDFLAGS) D A 
 !ELSE
 CXXFLAGS=$(CXXFLAGS) $(CXXNDEBUG)
 !ENDIF
@@ -37,7 +37,7 @@ CXXFLAGS=$(CXXFLAGS) $(CXXNDEBUG)
 INCLUDEDIRS=-I../include -I../src
 CXXFLAGS=$(CXXFLAGS) $(INCLUDEDIRS)
 
-ALL:	$(COMPONENT) $(LEXCOMPONENT) ScintillaWinS.obj WindowAccessor.obj
+ALL:	$(COMPONENT) $(LEXCOMPONENT) ScintillaWinS.obj WindowAccessor.obj ScintillaBaseS.obj
 
 clean: .SYMBOLIC
 	-del /q *.obj *.pdb $(COMPONENT) $(LEXCOMPONENT) &
@@ -190,6 +190,9 @@ $(LEXCOMPONENT): $(LOBJS) AutoComplete.obj ScintRes.res
 # Some source files are compiled into more than one object because of different conditional compilation
 ScintillaBaseL.obj: ..\src\ScintillaBase.cxx
 	$(CC) $(CXXFLAGS) -DSCI_LEXER -fo=$@ ..\src\ScintillaBase.cxx
+
+ScintillaBaseS.obj: ..\src\ScintillaBase.cxx
+	$(CC) $(CXXFLAGS) -DSTATIC_BUILD -fo=$@ ..\src\ScintillaBase.cxx
 
 ScintillaWinL.obj: ScintillaWin.cxx
 	$(CC) $(CXXFLAGS) -DSCI_LEXER -fo=$@ ScintillaWin.cxx

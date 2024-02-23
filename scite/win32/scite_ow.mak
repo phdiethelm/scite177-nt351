@@ -3,7 +3,8 @@
 # The License.txt file describes the conditions under which this software may be distributed.
 # Usage:
 #     wmake -f scite_ow.mak
-# For debug versions define DEBUG on the command line.
+# For debug versions define DEBUG on the command line:
+#     wmake -f scintilla_ow.mak DEBUG=1
 # For a build without Lua, define NO_LUA on the command line.
 # The main makefile uses mingw32 gcc and may be more current than this file.
 
@@ -29,9 +30,9 @@ LDDEBUG=
 LIBS=
 
 !IFDEF DEBUG
-CXXFLAGS=$(CXXFLAGS) $(CXXDEBUG)
-CCFLAGS=$(CCFLAGS) $(CXXDEBUG)
-LDFLAGS=$(LDDEBUG) $(LDFLAGS)
+CXXFLAGS=$(CXXFLAGS) $(CXXDEBUG) -d3i
+CCFLAGS=$(CCFLAGS) $(CXXDEBUG) -d3
+LDFLAGS=$(LDDEBUG) $(LDFLAGS) D A 
 !ELSE
 CXXFLAGS=$(CXXFLAGS) $(CXXNDEBUG)
 CCFLAGS=$(CCFLAGS) $(CXXNDEBUG)
@@ -173,7 +174,7 @@ OBJSSTATIC=SciTEBase.obj &
 	..\..\scintilla\win32\PropSet.obj &
 	..\..\scintilla\win32\RESearch.obj &
 	..\..\scintilla\win32\RunStyles.obj &
-	..\..\scintilla\win32\ScintillaBaseL.obj &
+	..\..\scintilla\win32\ScintillaBaseS.obj &
 	..\..\scintilla\win32\ScintillaWinS.obj &
 	..\..\scintilla\win32\Style.obj &
 	..\..\scintilla\win32\StyleContext.obj &
@@ -393,13 +394,11 @@ SciTERes.res: SciTERes.rc
 	$(RC) SciTERes.rc -fo=$@ -r -q -i=..\src -i="..\..\Scintilla\Win32" 
 
 Sc1Res.res: SciTERes.rc
-	$(RC) SciTERes.rc -fo=$@ -r -q -i=..\src -i="..\..\Scintilla\Win32" 
+	$(RC) SciTERes.rc -fo=$@ -r -q -i=..\src -i="..\..\Scintilla\Win32" -DSTATIC_BUILD
 
 $(PROG): $(OBJS) SciTERes.res
 	$(LD) $(LDFLAGS) OP q NAME $@ f { $(OBJS) } RES SciTERes.res
 
-# disabled for now. Did not get it to link...
-#  file clib3r.lib(dstrt386): multiple starting addresses found
 $(PROGSTATIC): $(OBJSSTATIC) $(LEXOBJS) Sc1Res.res
 	$(LD) $(LDFLAGS) OP q NAME $@ f { $(OBJSSTATIC) $(LEXOBJS) } RES Sc1Res.res
 
