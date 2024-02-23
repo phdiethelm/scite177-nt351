@@ -192,13 +192,13 @@ ScintillaBaseL.obj: ..\src\ScintillaBase.cxx
 	$(CC) $(CXXFLAGS) -DSCI_LEXER -fo=$@ ..\src\ScintillaBase.cxx
 
 ScintillaBaseS.obj: ..\src\ScintillaBase.cxx
-	$(CC) $(CXXFLAGS) -DSTATIC_BUILD -fo=$@ ..\src\ScintillaBase.cxx
+	$(CC) $(CXXFLAGS) -DSCI_LEXER -DSTATIC_BUILD -fo=$@ ..\src\ScintillaBase.cxx
 
 ScintillaWinL.obj: ScintillaWin.cxx
 	$(CC) $(CXXFLAGS) -DSCI_LEXER -fo=$@ ScintillaWin.cxx
 
 ScintillaWinS.obj: ScintillaWin.cxx
-	$(CC) $(CXXFLAGS) -DSTATIC_BUILD -fo=$@ ScintillaWin.cxx
+	$(CC) $(CXXFLAGS) -DSCI_LEXER -DSTATIC_BUILD -fo=$@ ScintillaWin.cxx
 
 # Dependencies
 LEX_HEADERS=..\include\Platform.h ..\include\PropSet.h &

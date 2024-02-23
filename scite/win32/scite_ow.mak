@@ -415,7 +415,7 @@ $(PROGSTATIC): $(OBJSSTATIC) $(LEXOBJS) Sc1Res.res
 	wcc386 $(CCFLAGS) $<
 
 Sc1.obj: SciTEWin.cxx
-	$(CC) $(CXXFLAGS) -DSTATIC_BUILD -fo=$@ SciTEWin.cxx
+	$(CC) $(CXXFLAGS) -DSCI_LEXER -DSTATIC_BUILD -fo=$@ SciTEWin.cxx
 
 # Dependencies
 DirectorExtension.obj: DirectorExtension.cxx 
