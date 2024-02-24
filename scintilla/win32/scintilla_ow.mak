@@ -1,4 +1,4 @@
-# Make file for Scintilla on Windows using OpenWatcom 1.9
+# Make file for Scintilla on Windows using OpenWatcom 2.0
 # Copyright 1998-2003 by Neil Hodgson <neilh@scintilla.org>
 # The License.txt file describes the conditions under which this software may be distributed.
 # Usage:
@@ -23,7 +23,7 @@ CXXFLAGS=-bm -zq -za0x -DWIN32 -D_WIN32_WINNT=0x0351
 CXXDEBUG=-DDEBUG
 CXXNDEBUG=-Oslran
 NAME=-fo=
-LDFLAGS=OP q SYS nt_dll
+LDFLAGS=OP q SYS nt_dll  runtime win=3.10
 LDDEBUG=
 LIBS=KERNEL32.lib USER32.lib GDI32.lib OLE32.LIB
 
