@@ -113,8 +113,8 @@ void SciTEBase::SetLanguageMenu() {
 	}
 }
 
-const char propLocalFileName[] = "SciTE.properties";
-const char propDirectoryFileName[] = "SciTEDirectory.properties";
+const char propLocalFileName[] = "SciTE.pro";
+const char propDirectoryFileName[] = "SciTEDir.pro";
 
 /**
 Read global and user properties files.
@@ -1297,7 +1297,7 @@ SString SciTEBase::LocaliseMessage(const char *s, const char *param0, const char
 
 void SciTEBase::ReadLocalization() {
 	localiser.Clear();
-	const char *title = "locale.properties";
+	const char *title = "locale.pro";
 	SString localeProps = props.GetExpanded(title);
 	if (localeProps.length()) {
 		title = localeProps.c_str();

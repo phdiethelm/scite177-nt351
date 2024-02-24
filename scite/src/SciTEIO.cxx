@@ -62,15 +62,15 @@
 #include "SciTEBase.h"
 
 #ifdef unix
-const char propUserFileName[] = ".SciTEUser.properties";
+const char propUserFileName[] = ".SciTEUsr.pro";
 #else
 // Windows or VMS
-const char propUserFileName[] = "SciTEUser.properties";
+const char propUserFileName[] = "SciTEUsr.pro";
 #endif
-const char propGlobalFileName[] = "SciTEGlobal.properties";
-const char propAbbrevFileName[] = "abbrev.properties";
+const char propGlobalFileName[] = "SciTEGlo.pro";
+const char propAbbrevFileName[] = "abbrev.pro";
 
-#define PROPERTIES_EXTENSION	".properties"
+#define PROPERTIES_EXTENSION	".pro"
 
 static bool IsPropertiesFile(const FilePath &filename) {
 	FilePath ext = filename.Extension();
