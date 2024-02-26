@@ -1,9 +1,23 @@
 # SciTE 1.77 for old NT versions
 
-## Downloads
-- [NT 4.0 x86](https://github.com/phdiethelm/scite177-nt351/releases/download/v1.77-nt4/wscite177nt4.zip)
-- [NT 3.51 x86](https://github.com/phdiethelm/scite177-nt351/releases/download/v1.77-nt351-fix2/sc177nt351.zip)
+Win32s version to run on Windows 3.1ish
 
-## Tested
-- NT 4 version on NT 4.0 SP6
-- NT 3.51 version on NT 3.51 SP5
+
+# Notes
+- Needs ow 2.0 to build
+  It has the required fixed to the startup to allow loading the app in NT3.1 and win32s.
+  details see https://www.os2museum.com/wp/retro-porting-to-nt-3-1/
+
+- Renamed files to match 8.3 file names (".properties" is now ".pro")
+
+- annoying missing msimm32 dialogs on startup
+  Need to fix link but as long as there are bigger issues...
+
+- About dialog generates GP and takes down windows
+
+- Text rendering is incomplete but it changes font when switching between "Use Monospaced" and Normal.
+
+- Text selection does not work
+
+# Preview
+![](win311_win32s.png)
